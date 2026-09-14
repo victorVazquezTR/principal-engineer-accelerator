@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>S002 - Layered Architecture Style</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+<div class="lang-toggle">
+  <a href="../index.en.html">← Home</a> |
+  <a href="S002.es.html">ES</a>
+  <a href="S002.en.html" class="active">EN</a>
+  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark theme">🌙</button>
+</div>
+<header>
+  <p>Phase 1 — Engineering Foundations / Module 1 — Modern Software Engineering</p>
+  <h1>Session 002 - Layered Architecture Style</h1>
+</header>
+<main>
+  <section>
+    <h2>Goal</h2>
+    <p>By the end of this session, Victor will be able to design,
+    justify, and critique a Layered / N-Tier architecture: distinguish
+    logical layers from physical tiers, decide between strict (closed)
+    and relaxed (open) layering depending on context, and recognize —
+    and avoid — the "architecture sinkhole" anti-pattern. It connects
+    explicitly to S001: internal layering and the deployment unit
+    (monolith vs. microservices) are independent variables.</p>
+  </section>
+  <section>
+    <h2>Time breakdown</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Block</th><th>Activity</th><th>Duration</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Context and motivation</td><td>10 min</td></tr>
+          <tr><td>2</td><td>Main Topic — layers, tiers, strict vs. relaxed layering</td><td>25 min</td></tr>
+          <tr><td>3</td><td>Sub topics — Architecture Sinkhole, CI enforcement</td><td>25 min</td></tr>
+          <tr><td>4</td><td>Real world example</td><td>15 min</td></tr>
+          <tr><td>5</td><td>Exercises (3)</td><td>40 min</td></tr>
+          <tr><td>6</td><td>Knowledge mastery check</td><td>10 min</td></tr>
+          <tr><td><strong>Total</strong></td><td></td><td><strong>~125 min</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>Main Topic</h2>
+    <h3>1. What Is Layered Architecture (Layered / N-Tier)?</h3>
+    <p>Organizes the system into horizontal levels; each layer has a
+    specific responsibility and typically communicates only with the
+    layer immediately below it. Most-cited variant: Presentation,
+    Business/Application, Persistence, Database.</p>
+    <p><strong>Layers vs. Tiers:</strong> layer = logical separation of
+    code; tier = physical/deployment separation. A well-designed
+    monolith is almost always organized into 3-4 layers inside a single
+    tier.</p>
+    <h3>2. Strict (Closed) vs. Relaxed (Open) Layering</h3>
+    <p>Closed: every request crosses each layer sequentially — more
+    isolation, more forwarding. Open: certain layers can be skipped —
+    less boilerplate, more coupling.</p>
+  </section>
+  <section>
+    <h2>Sub topics</h2>
+    <h3>3. The "Architecture Sinkhole" Anti-Pattern</h3>
+    <p>Requests that cross layers as simple pass-through, with no real
+    business logic. 80/20 rule (Richards): up to ~20% of a system's
+    flows falling into this pattern is acceptable.</p>
+    <h3>4. Enforcing Layer Boundaries in CI</h3>
+    <p>ArchUnit / dependency-cruiser / import-linter (categories) for
+    layer rules, including explicit, auditable exceptions.</p>
+    <h3>5. When NOT to Use Layered Architecture</h3>
+    <p>The domain variety problem; limited agility under strict
+    layering.</p>
+  </section>
+  <section>
+    <h2>Real world example</h2>
+    <p><em>(Pedagogical scenario, not a documented real case.)</em>
+    Catalog and Search module: grew from 4 to 6 layers; ~65% of reads
+    as pure pass-through (architecture sinkhole). Decision: relaxed
+    layering on reads, strict on writes.</p>
+  </section>
+  <section>
+    <h2>Exercises</h2>
+    <h3>Exercise 1 — Modeling</h3>
+    <p>Path-differentiated layer design (read/write), closed/open
+    justification, sinkhole ratio estimate.</p>
+    <h3>Exercise 2 — ADR-002</h3>
+    <p>Draft ADR-002 comparing 6 strict layers vs. a path-differentiated
+    design.</p>
+    <h3>Exercise 3 — CI Enforcement</h3>
+    <p>Conceptual CI rule forbidding Presentation → Persistence on
+    writes, allowing the read exception only via a reserved-name module
+    (e.g. <code>read_facade</code>).</p>
+  </section>
+  <section>
+    <h2>Resources</h2>
+    <ul>
+      <li>Mark Richards &amp; Neal Ford — <em>Fundamentals of Software Architecture</em> (O'Reilly, 2020) — <a href="https://www.oreilly.com/library/view/fundamentals-of-software/9781492043447/">link</a></li>
+      <li>Mark Richards — <em>Software Architecture Patterns</em> (O'Reilly, free report) — <a href="https://www.oreilly.com/content/software-architecture-patterns/">link</a></li>
+      <li>Martin Fowler — "Presentation Domain Data Layering" — <a href="https://martinfowler.com/bliki/PresentationDomainDataLayering.html">link</a></li>
+      <li>Azure Architecture Center — "N-tier architecture style" — <a href="https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/n-tier">link</a></li>
+      <li>Baeldung — "Difference Between Layers and Tiers" — <a href="https://www.baeldung.com/cs/layers-vs-tiers">link</a></li>
+    </ul>
+  </section>
+  <section>
+    <h2>Knowledge mastery check</h2>
+    <ul>
+      <li>Define layered architecture and distinguish layers from tiers.</li>
+      <li>Explain strict vs. relaxed layering and their trade-offs.</li>
+      <li>Identify the architecture sinkhole and apply the 80/20 rule.</li>
+      <li>Justify when NOT to use layered architecture.</li>
+      <li>Design CI enforcement with explicit exceptions.</li>
+      <li>Connect internal layering to S001's monolith/microservices decision.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>Principal Engineer Lens</h2>
+    <p><strong>Technical:</strong> the cost of an in-process pass-through
+    is mostly maintenance, not latency, unless layers are deployed
+    across separate physical tiers.</p>
+    <p><strong>Business:</strong> low adoption cost and learning curve;
+    agility cost under strict layering.</p>
+    <p><strong>AI:</strong> AI components live behind the Domain layer,
+    isolated with timeouts/circuit breakers.</p>
+    <p><strong>Leadership:</strong> governance of abstraction via ADRs;
+    a documented exception beats a tacit one.</p>
+  </section>
+  <section>
+    <h2>End-of-Session Success Criteria</h2>
+    <ul>
+      <li>generate-session-002.sh exists under tools/generators/, is
+      executable and idempotent.</li>
+      <li>Theory-002.md, Session-002.md and ADR-002.md generated.</li>
+      <li>dashboard.md, current-state.md and learning-journal.md
+      updated.</li>
+      <li>Static site compiles S002.es.html and S002.en.html.</li>
+      <li>All 3 exercises solved with explicit trade-offs.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>Reflection</h2>
+    <p>The goal is not to maximize the number of layers, but to
+    maximize the number of layers that genuinely justify their own
+    cost — and to be willing to collapse them when the evidence says
+    so.</p>
+  </section>
+</main>
+</body>
+</html>

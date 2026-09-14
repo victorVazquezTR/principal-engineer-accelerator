@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>S002 - Layered Architecture Style</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+<div class="lang-toggle">
+  <a href="../index.es.html">← Inicio</a> |
+  <a href="S002.es.html" class="active">ES</a>
+  <a href="S002.en.html">EN</a>
+  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Alternar tema oscuro">🌙</button>
+</div>
+<header>
+  <p>Phase 1 — Engineering Foundations / Module 1 — Modern Software Engineering</p>
+  <h1>Session 002 - Layered Architecture Style</h1>
+</header>
+<main>
+  <section>
+    <h2>Goal</h2>
+    <p>Al finalizar esta sesión, Victor podrá diseñar, justificar y
+    criticar una arquitectura por capas (Layered / N-Tier): distinguir
+    capas lógicas de tiers físicos, decidir entre layering estricto
+    (closed) y relajado (open) según el contexto, y reconocer — y
+    evitar — el anti-patrón conocido como "architecture sinkhole".
+    Conecta explícitamente con S001: layering interno y unidad de
+    despliegue (monolito vs. microservicios) son variables
+    independientes.</p>
+  </section>
+  <section>
+    <h2>Time breakdown</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Bloque</th><th>Actividad</th><th>Duración</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Contexto y motivación</td><td>10 min</td></tr>
+          <tr><td>2</td><td>Main Topic — capas, tiers, layering estricto vs. relajado</td><td>25 min</td></tr>
+          <tr><td>3</td><td>Sub topics — Architecture Sinkhole, enforcement en CI</td><td>25 min</td></tr>
+          <tr><td>4</td><td>Real world example</td><td>15 min</td></tr>
+          <tr><td>5</td><td>Exercises (3)</td><td>40 min</td></tr>
+          <tr><td>6</td><td>Knowledge mastery check</td><td>10 min</td></tr>
+          <tr><td><strong>Total</strong></td><td></td><td><strong>~125 min</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section>
+    <h2>Main Topic</h2>
+    <h3>1. ¿Qué es la Arquitectura por Capas (Layered / N-Tier)?</h3>
+    <p>Organiza el sistema en niveles horizontales; cada capa tiene una
+    responsabilidad específica y se comunica típicamente solo con la
+    capa inmediatamente inferior. Variante más citada: Presentación,
+    Negocio/Aplicación, Persistencia, Base de Datos.</p>
+    <p><strong>Layers vs. Tiers:</strong> layer = separación lógica del
+    código; tier = separación física/de despliegue. Un monolito bien
+    diseñado casi siempre está organizado en 3-4 capas dentro de un
+    único tier.</p>
+    <h3>2. Layering Estricto (Closed) vs. Relajado (Open)</h3>
+    <p>Closed: toda petición atraviesa cada capa secuencialmente — más
+    aislamiento, más forwarding. Open: ciertas capas pueden saltarse —
+    menos boilerplate, más acoplamiento.</p>
+  </section>
+  <section>
+    <h2>Sub topics</h2>
+    <h3>3. El Anti-Patrón "Architecture Sinkhole"</h3>
+    <p>Peticiones que atraviesan capas como simple pass-through, sin
+    lógica de negocio real. Regla 80/20 (Richards): hasta ~20% de los
+    flujos en este patrón es aceptable.</p>
+    <h3>4. Enforcement de Límites de Capa en CI</h3>
+    <p>ArchUnit / dependency-cruiser / import-linter (categorías) para
+    reglas de capas, incluyendo excepciones explícitas auditables.</p>
+    <h3>5. Cuándo NO usar Layered Architecture</h3>
+    <p>Problema de la variedad de dominio; agilidad limitada bajo
+    layering estricto.</p>
+  </section>
+  <section>
+    <h2>Real world example</h2>
+    <p><em>(Escenario pedagógico, no un caso real documentado.)</em>
+    Módulo de Catálogo y Búsqueda: de 4 a 6 capas; ~65% de lecturas
+    como pass-through puro (architecture sinkhole). Decisión: layering
+    relajado en lectura, estricto en escritura.</p>
+  </section>
+  <section>
+    <h2>Exercises</h2>
+    <h3>Ejercicio 1 — Modelado</h3>
+    <p>Diseño de capas diferenciado por camino (lectura/escritura),
+    justificación de closed/open, estimación del sinkhole ratio.</p>
+    <h3>Ejercicio 2 — ADR-002</h3>
+    <p>Borrador de ADR-002 comparando 6 capas estrictas vs. diseño
+    diferenciado por camino.</p>
+    <h3>Ejercicio 3 — Enforcement en CI</h3>
+    <p>Regla conceptual de CI que prohíbe Presentación → Persistencia
+    en escritura y permite la excepción de lectura solo vía un módulo
+    con nombre reservado (p. ej. <code>read_facade</code>).</p>
+  </section>
+  <section>
+    <h2>Resources</h2>
+    <ul>
+      <li>Mark Richards &amp; Neal Ford — <em>Fundamentals of Software Architecture</em> (O'Reilly, 2020) — <a href="https://www.oreilly.com/library/view/fundamentals-of-software/9781492043447/">enlace</a></li>
+      <li>Mark Richards — <em>Software Architecture Patterns</em> (O'Reilly, reporte gratuito) — <a href="https://www.oreilly.com/content/software-architecture-patterns/">enlace</a></li>
+      <li>Martin Fowler — "Presentation Domain Data Layering" — <a href="https://martinfowler.com/bliki/PresentationDomainDataLayering.html">enlace</a></li>
+      <li>Azure Architecture Center — "N-tier architecture style" — <a href="https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/n-tier">enlace</a></li>
+      <li>Baeldung — "Difference Between Layers and Tiers" — <a href="https://www.baeldung.com/cs/layers-vs-tiers">enlace</a></li>
+    </ul>
+  </section>
+  <section>
+    <h2>Knowledge mastery check</h2>
+    <ul>
+      <li>Definir arquitectura por capas y diferenciar layers de tiers.</li>
+      <li>Explicar layering estricto vs. relajado y sus trade-offs.</li>
+      <li>Identificar el architecture sinkhole y aplicar la regla 80/20.</li>
+      <li>Justificar cuándo NO usar layered architecture.</li>
+      <li>Diseñar enforcement de CI con excepciones explícitas.</li>
+      <li>Conectar layering interno con la decisión monolito/microservicios de S001.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>Principal Engineer Lens</h2>
+    <p><strong>Technical:</strong> el costo de un pass-through in-process
+    es de mantenimiento, no de latencia, salvo que las capas se
+    desplieguen en tiers físicos separados.</p>
+    <p><strong>Business:</strong> bajo costo de adopción y curva de
+    aprendizaje; costo de agilidad si el layering es estricto.</p>
+    <p><strong>AI:</strong> componentes de IA detrás de la capa de
+    Dominio, aislados con timeouts/circuit breakers.</p>
+    <p><strong>Leadership:</strong> gobernanza de la abstracción vía
+    ADRs; excepción documentada mejor que excepción tácita.</p>
+  </section>
+  <section>
+    <h2>End-of-Session Success Criteria</h2>
+    <ul>
+      <li>generate-session-002.sh existe en tools/generators/, es
+      ejecutable e idempotente.</li>
+      <li>Theory-002.md, Session-002.md y ADR-002.md generados.</li>
+      <li>dashboard.md, current-state.md y learning-journal.md
+      actualizados.</li>
+      <li>Sitio estático compila S002.es.html y S002.en.html.</li>
+      <li>Los 3 ejercicios resueltos con trade-offs explícitos.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>Reflection</h2>
+    <p>El objetivo no es maximizar el número de capas, sino maximizar
+    el número de capas que realmente justifican su propio costo — y
+    estar dispuesto a colapsarlas cuando la evidencia lo indique.</p>
+  </section>
+</main>
+</body>
+</html>
