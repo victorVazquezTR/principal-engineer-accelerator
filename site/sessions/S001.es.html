@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>S001 - Monolithic Architecture Style</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<script src="../assets/theme.js"></script>
+</head>
+<body>
+<div class="lang-toggle">
+  <a href="S001.es.html" class="active">ES</a> |
+  <a href="S001.en.html">EN</a>
+  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Alternar tema oscuro">🌙</button>
+</div>
+
+<main class="session">
+<p class="breadcrumb">Phase 1 — Engineering Foundations / Module 1 — Modern Software Engineering</p>
+<h1>Session 001 - Monolithic Architecture Style</h1>
+
+<h2>Goal</h2>
+<p>Al finalizar la sesión, Victor podrá definir con precisión qué es (y
+qué NO es) un estilo de arquitectura monolítico, distinguirlo del
+anti-patrón "big ball of mud", y justificar cuándo un monolito es la
+decisión arquitectónica correcta para un contexto de negocio dado,
+documentando esa decisión en un ADR.</p>
+
+<h2>Time breakdown</h2>
+<div class="table-wrapper">
+<table>
+<thead><tr><th>Bloque</th><th>Actividad</th><th>Duración</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Contexto y motivación</td><td>10 min</td></tr>
+<tr><td>2</td><td>Main Topic — Definición, unidad de despliegue y comunicación interna</td><td>20 min</td></tr>
+<tr><td>3</td><td>Sub topics — Escalamiento, boundaries internos y trade-offs</td><td>25 min</td></tr>
+<tr><td>4</td><td>Real world example</td><td>15 min</td></tr>
+<tr><td>5</td><td>Exercises (3)</td><td>45 min</td></tr>
+<tr><td>6</td><td>Knowledge mastery check</td><td>10 min</td></tr>
+<tr><td><strong>Total</strong></td><td></td><td><strong>~125 min</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<h2>Main Topic</h2>
+<h3>1. Definición y unidad de despliegue</h3>
+<p>Un monolito es una decisión sobre la unidad de despliegue: toda la
+funcionalidad se empaqueta, versiona y despliega como un único
+artefacto. No es una afirmación sobre el tamaño del código ni sobre su
+calidad interna. "Monolito" no es sinónimo de "código mal diseñado" —
+se puede tener un monolito modular bien delimitado (S022) o
+microservicios tan acoplados como cualquier monolito descuidado.</p>
+
+<h3>2. Comunicación interna y modelo de datos</h3>
+<p>Los módulos se comunican mediante llamadas de función in-process, sin
+serialización de red ni necesidad de manejar fallos parciales de red
+entre módulos internos. Las transacciones multi-módulo pueden apoyarse
+en una transacción ACID local si comparten base de datos, evitando la
+complejidad de Saga/TCC (S051, S052).</p>
+
+<h3>3. Monolito vs. "Big Ball of Mud"</h3>
+<p>El anti-patrón real es la ausencia de límites internos explícitos
+(bounded contexts, S019), no el estilo monolítico. La causa del
+deterioro es la falta de mecanismos de enforcement, no la elección del
+estilo de despliegue.</p>
+
+<h2>Sub topics</h2>
+<h3>4. Modelo de escalamiento</h3>
+<p>Vertical (más recursos por instancia) u horizontal por réplica
+completa. No permite escalar un módulo individual según su propia
+carga, a diferencia de microservicios (S005).</p>
+
+<h3>5. Boundaries internos y modularidad</h3>
+<p>Requiere mecanismos activos: visibilidad de paquete/módulo en el
+lenguaje, linters arquitectónicos en CI (categoría: ArchUnit,
+dependency-cruiser, import-linter), o revisión de código con checklist
+explícito.</p>
+
+<h3>6. Trade-offs frente a estilos distribuidos</h3>
+<div class="table-wrapper">
+<table>
+<thead><tr><th>Dimensión</th><th>Monolito</th><th>Microservicios</th></tr></thead>
+<tbody>
+<tr><td>Complejidad operativa inicial</td><td>Baja</td><td>Alta</td></tr>
+<tr><td>Consistencia transaccional</td><td>Simple (ACID local)</td><td>Eventual (Saga, TCC)</td></tr>
+<tr><td>Escalamiento granular</td><td>No</td><td>Sí</td></tr>
+<tr><td>Autonomía de despliegue</td><td>Baja</td><td>Alta (en teoría)</td></tr>
+<tr><td>Velocidad inicial de desarrollo</td><td>Alta (equipos pequeños)</td><td>Menor al inicio</td></tr>
+<tr><td>Riesgo de blast radius</td><td>Afecta el proceso completo</td><td>Aislable por servicio</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2>Real world example</h2>
+<p><strong>Dato verificable:</strong> según Chris Richardson
+(microservices.io), varios servicios ampliamente conocidos (Amazon.com,
+eBay, Netflix) comenzaron con arquitectura monolítica antes de
+evolucionar a arquitecturas de servicios. No se detallan cronologías ni
+cifras específicas en esa fuente.</p>
+<p><strong>Escenario ilustrativo (pedagógico, no documentado):</strong>
+equipo de 4 personas construyendo el MVP de una plataforma de reservas
+para consultorios médicos con un monolito modular de 3 paquetes
+(<code>scheduling</code>, <code>billing</code>, <code>notifications</code>).</p>
+
+<h2>Exercises</h2>
+<h3>Ejercicio 1 — Decisión de estilo arquitectónico para un MVP</h3>
+<p><em>Contexto:</em> Principal Engineer de un equipo de 3 personas, MVP
+de logística de última milla, 8 semanas, dominio aún no comprendido.</p>
+<ol>
+<li>Enumera ≥4 argumentos específicos a favor del monolito y ≥2 en contra.</li>
+<li>Toma la decisión y justifícala.</li>
+<li>Define la estructura inicial de paquetes internos (≥3).</li>
+</ol>
+
+<h3>Ejercicio 2 — Enforcement de boundaries internos</h3>
+<p><em>Contexto:</em> 12 meses después, equipo de 3 a 12 ingenieros,
+imports cruzados no planeados entre <code>routing</code> y
+<code>notifications</code>.</p>
+<ol>
+<li>Propone un mecanismo de enforcement (categoría de herramienta y regla(s)).</li>
+<li>Define la política de violación/bloqueo/excepción.</li>
+<li>Identifica ≥2 señales de alerta adicionales de "big ball of mud".</li>
+</ol>
+
+<h3>Ejercicio 3 — ADR de decisión arquitectónica</h3>
+<p><em>Contexto:</em> formalizar la decisión del Ejercicio 1.</p>
+<ol>
+<li>Redacta ADR-001 (Estatus, Contexto, Decisión, Consecuencias).</li>
+<li>Incluye un trigger explícito de revisión futura.</li>
+</ol>
+<p>Ver <code>docs/adrs/ADR-001.md</code> para el ADR persistido.</p>
+
+<h2>Resources</h2>
+<ul>
+<li>Martin Fowler, "MonolithFirst" — <a href="https://martinfowler.com/bliki/MonolithFirst.html">martinfowler.com/bliki/MonolithFirst.html</a></li>
+<li>Martin Fowler &amp; James Lewis, "Microservices" — <a href="https://martinfowler.com/articles/microservices.html">martinfowler.com/articles/microservices.html</a></li>
+<li>Chris Richardson, "Pattern: Monolithic Architecture" — <a href="https://microservices.io/patterns/monolithic.html">microservices.io/patterns/monolithic.html</a></li>
+<li>Sam Newman, <em>Building Microservices</em>, 2nd Ed. (O'Reilly) — <a href="https://www.oreilly.com/library/view/building-microservices-2nd/9781492034018/">oreilly.com</a></li>
+<li>Mark Richards &amp; Neal Ford, <em>Fundamentals of Software Architecture</em>, 2nd Ed. (O'Reilly) — <a href="https://www.oreilly.com/library/view/fundamentals-of-software/9781098175504/">oreilly.com</a></li>
+</ul>
+
+<h2>Knowledge mastery check</h2>
+<ul class="checklist">
+<li>Puedo definir un monolito en términos de unidad de despliegue, no de tamaño o calidad del código.</li>
+<li>Puedo explicar la diferencia entre "monolito" y "big ball of mud".</li>
+<li>Puedo enumerar ≥3 ventajas y ≥3 desventajas verificables del estilo monolítico.</li>
+<li>Puedo explicar por qué el escalamiento es "todo o nada".</li>
+<li>Puedo nombrar ≥2 mecanismos de enforcement de boundaries internos.</li>
+<li>Puedo argumentar, con ≥2 criterios, cuándo NO conviene empezar con un monolito.</li>
+</ul>
+
+<h2>Principal Engineer Lens</h2>
+<h3>Technical Perspective</h3>
+<p>La comunicación in-process elimina overhead de red pero también el
+aislamiento de fallos que la red provee; la disciplina de boundaries
+determina si el monolito sigue siendo mantenible.</p>
+<h3>Business Perspective</h3>
+<p>Menor costo/tiempo al primer release; el riesgo no gestionado es la
+deuda técnica silenciosa por erosión de boundaries.</p>
+<h3>AI Perspective</h3>
+<p>Una llamada síncrona a un servicio de IA dentro del flujo de request
+introduce latencia no determinista y un punto de fallo compartido;
+mitigación: patrón asíncrono con fallback determinista.</p>
+<h3>Leadership Perspective</h3>
+<p>La elección de estilo debe documentarse como ADR, no adoptarse por
+default; Conway's Law (S117) ya opera dentro del monolito vía la
+organización de paquetes internos.</p>
+
+<h2>End-of-Session Success Criteria</h2>
+<ul class="checklist">
+<li><code>generate-session-001.sh</code> existe, tiene permisos de ejecución y corre de forma idempotente.</li>
+<li><code>docs/theory/Theory-001.md</code>, <code>docs/sessions/Session-001.md</code> y <code>docs/adrs/ADR-001.md</code> generados.</li>
+<li><code>docs/dashboard.md</code>, <code>docs/current-state.md</code> y <code>docs/learning-journal.md</code> reflejan el avance.</li>
+<li><code>site/sessions/S001.es.html</code> y <code>site/sessions/S001.en.html</code> compilan correctamente.</li>
+<li>Los 3 ejercicios resueltos con justificación de trade-offs, incluyendo el ADR-001 con su trigger.</li>
+</ul>
+
+<h2>Reflection</h2>
+<p>Un monolito no es una arquitectura inferior por definición — es una
+decisión legítima sobre la unidad de despliegue. El fracaso que la
+industria atribuye al "estilo monolítico" es, con más precisión, el
+fracaso de no mantener límites internos explícitos y su enforcement a
+lo largo del tiempo.</p>
+
+</main>
+</body>
+</html>

@@ -21,3 +21,4 @@
 | Staff Software Engineer | 82 | 0 | 0.00% |
 | Architect | 77 | 0 | 0.00% |
 | Product AI | 105 | 0 | 0.00% |
+| S001 | Monolithic Architecture Style | 1 | 1 | Staff | Completed |

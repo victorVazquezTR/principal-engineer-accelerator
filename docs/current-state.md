@@ -10,3 +10,8 @@
 > This file is updated manually after each session and re-uploaded to the
 > Claude Project's knowledge base to maintain continuity across
 > conversations.
+
+<!-- CURRENT-SESSION:START -->
+- Last completed session: S001 - Monolithic Architecture Style (Phase 1, Module 1, Track Staff)
+- Next session: TBD (definir con Victor)
+<!-- CURRENT-SESSION:END -->
