@@ -2,7 +2,7 @@
 * { box-sizing: border-box; }
 
 html {
-  font-size: 16px; /* mobile base — 1rem == 16px, never smaller (avoids iOS auto-zoom on inputs) */
+  font-size: 28px; /* mobile base — 1rem == 16px, never smaller (avoids iOS auto-zoom on inputs) */
 }
 
 :root {
@@ -165,7 +165,7 @@ pre {
 
 /* Larger screens: apply the desktop layout on top of the mobile base */
 @media (min-width: 640px) {
-  html { font-size: 15px; }
+  html { font-size: 24px; }
   body {
     max-width: 900px;
     margin: 0 auto;
